@@ -68,7 +68,7 @@
             this.cbLimitMap = new System.Windows.Forms.CheckBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.btnStreetView = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -199,6 +199,7 @@
             this.pgPolygon.CategoryForeColor = System.Drawing.SystemColors.InactiveCaptionText;
             this.pgPolygon.Dock = System.Windows.Forms.DockStyle.Top;
             this.pgPolygon.HelpVisible = false;
+            this.pgPolygon.LineColor = System.Drawing.SystemColors.ControlDark;
             this.pgPolygon.Location = new System.Drawing.Point(3, 16);
             this.pgPolygon.Name = "pgPolygon";
             this.pgPolygon.Size = new System.Drawing.Size(279, 194);
@@ -291,6 +292,7 @@
             this.pgMarker.CategoryForeColor = System.Drawing.SystemColors.InactiveCaptionText;
             this.pgMarker.Dock = System.Windows.Forms.DockStyle.Top;
             this.pgMarker.HelpVisible = false;
+            this.pgMarker.LineColor = System.Drawing.SystemColors.ControlDark;
             this.pgMarker.Location = new System.Drawing.Point(3, 16);
             this.pgMarker.Name = "pgMarker";
             this.pgMarker.Size = new System.Drawing.Size(279, 141);
@@ -346,6 +348,7 @@
             this.pgMapOptions.CategoryForeColor = System.Drawing.SystemColors.InactiveCaptionText;
             this.pgMapOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.pgMapOptions.HelpVisible = false;
+            this.pgMapOptions.LineColor = System.Drawing.SystemColors.ControlDark;
             this.pgMapOptions.Location = new System.Drawing.Point(3, 16);
             this.pgMapOptions.Name = "pgMapOptions";
             this.pgMapOptions.Size = new System.Drawing.Size(273, 194);
@@ -381,6 +384,7 @@
             this.pgStreetViewOptions.CategoryForeColor = System.Drawing.SystemColors.InactiveCaptionText;
             this.pgStreetViewOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.pgStreetViewOptions.HelpVisible = false;
+            this.pgStreetViewOptions.LineColor = System.Drawing.SystemColors.ControlDark;
             this.pgStreetViewOptions.Location = new System.Drawing.Point(3, 223);
             this.pgStreetViewOptions.Name = "pgStreetViewOptions";
             this.pgStreetViewOptions.Size = new System.Drawing.Size(273, 194);
@@ -411,7 +415,7 @@
             // 
             // groupBox8
             // 
-            this.groupBox8.Controls.Add(this.button2);
+            this.groupBox8.Controls.Add(this.button3);
             this.groupBox8.Controls.Add(this.button1);
             this.groupBox8.Controls.Add(this.label6);
             this.groupBox8.Controls.Add(this.waterReportLng);
@@ -511,15 +515,15 @@
             this.btnStreetView.UseVisualStyleBackColor = true;
             this.btnStreetView.Click += new System.EventHandler(this.btnStreetView_Click);
             // 
-            // button2
+            // button3
             // 
-            this.button2.Location = new System.Drawing.Point(9, 95);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(267, 23);
-            this.button2.TabIndex = 5;
-            this.button2.Text = "draw a fucking circle already";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.button3.Location = new System.Drawing.Point(9, 95);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(267, 23);
+            this.button3.TabIndex = 6;
+            this.button3.Text = "Get Water Reports From Server";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // Form1
             // 
@@ -595,7 +599,7 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox waterReportLng;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button3;
     }
 }
 

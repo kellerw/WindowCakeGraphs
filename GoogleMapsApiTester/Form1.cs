@@ -2,6 +2,13 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using GoogleMapsApi;
+using System.Net;
+using System.IO;
+using System.Text;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Converters;
+using System.Reflection;
 
 namespace GoogleMapsApiTester
 {
@@ -299,13 +306,13 @@ namespace GoogleMapsApiTester
 
 
         private static int reportNumner = 1;
-        Dictionary<int, int> markers = new Dictionary<int, int>();
+        Dictionary<int, string> markers = new Dictionary<int, string>();
         private void button1_Click(object sender, EventArgs e)
         {
             double lat = Convert.ToDouble(waterReportLat.Text);
             double lng = Convert.ToDouble(waterReportLng.Text);
             var location = new GeographicLocation(lat, lng);
-            
+
             var messageToShow = $"Water Report #{reportNumner++}";
 
             MarkerOptions option = new MarkerOptions()
@@ -315,15 +322,14 @@ namespace GoogleMapsApiTester
                 Icon = Application.StartupPath + "\\about.png",
                 DraggingEnabled = false,
             };
-            
+
             var marker = _gMapsWrapper.AddMarker(location, option, false);
             marker.Click += new Action<IMarker, GeographicLocation>(marker_Click);
             marker.DoubleClick += new Action<IMarker, GeographicLocation>(marker_DoubleClick);
             marker.DragEnd += new Action<IMarker, GeographicLocation>(marker_DragEnd);
-            markers.Add(marker.MarkerId, reportNumner-1);
+            markers.Add(marker.MarkerId, $"{reportNumner - 1}");
             var infoWindow = _gMapsWrapper.ShowInfoWindow(messageToShow, marker, new InfoWindowOptions() { MaxWidth = 100 }, true);
             infoWindow.CloseClick += new Action<IInfoWindow>(infoWindow_CloseClick);
-
 
             //CircleOptions radiusOptions = new CircleOptions() {
             //    FillColor = System.Drawing.Color.Aqua,
@@ -338,12 +344,149 @@ namespace GoogleMapsApiTester
             //_gMapsWrapper.DrawCircle(location, 16000, radiusOptions, false);
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void button3_Click(object sender, EventArgs e)
         {
-            //double lat = Convert.ToDouble(waterReportLat.Text);
-            //double lng = Convert.ToDouble(waterReportLng.Text);
-            //var location = new GeographicLocation(lat, lng);
-            InvokeScript("drawMyCircle");
+            getAllWaterSourceReports();
+        }
+
+        private void getAllWaterSourceReports()
+        {
+            string jsonResponse = GET(@"http://localhost:8080/water-reports");
+            var allSourceReports = JArray.Parse(jsonResponse).ToObject<List<WaterSourceReport>>();
+            foreach (var report in allSourceReports)
+            {
+                var location = new GeographicLocation(report.latitude, report.longitude);
+                var messageToShow = $@"Water Report #{report.id} <br /> {GetDescription(report.waterCondition)} {GetDescription(report.waterType)}";
+
+                MarkerOptions option = new MarkerOptions()
+                {
+                    Animation = MarkerAnimation.Drop,
+                    Clickable = true,
+                    //Icon = Application.StartupPath + "\\about.png",
+                    DraggingEnabled = false,
+                };
+
+                var marker = _gMapsWrapper.AddMarker(location, option, false);
+                marker.Click += new Action<IMarker, GeographicLocation>(my_marker_Click);
+                marker.DoubleClick += new Action<IMarker, GeographicLocation>(marker_DoubleClick);
+                marker.DragEnd += new Action<IMarker, GeographicLocation>(marker_DragEnd);
+
+                markers.Add(marker.MarkerId, messageToShow);
+            }
+        }
+
+        private void my_marker_Click(IMarker arg1, GeographicLocation arg2)
+        {
+            lblLastEvent.Text = "Marker_Click";
+            var infoWindow = _gMapsWrapper.ShowInfoWindow(markers[arg1.MarkerId], arg1, 
+                new InfoWindowOptions() { MaxWidth = 150, DisableAutoPan = false }, true);
+            infoWindow.CloseClick += new Action<IInfoWindow>(infoWindow_CloseClick);
+
+        }
+
+        string GET(string url)
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            try
+            {
+                WebResponse response = request.GetResponse();
+                using (Stream responseStream = response.GetResponseStream())
+                {
+                    StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
+                    return reader.ReadToEnd();
+                }
+            }
+            catch (WebException ex)
+            {
+                WebResponse errorResponse = ex.Response;
+                using (Stream responseStream = errorResponse.GetResponseStream())
+                {
+                    StreamReader reader = new StreamReader(responseStream, Encoding.GetEncoding("utf-8"));
+                    String errorText = reader.ReadToEnd();
+                    // log errorText
+                }
+                throw;
+            }
+        }
+
+        static string GetDescription( Enum en)
+        {
+            Type type = en.GetType();
+            MemberInfo[] memInfo = type.GetMember(en.ToString());
+            if (memInfo != null && memInfo.Length > 0)
+            {
+                object[] attrs = memInfo[0].GetCustomAttributes(typeof(Description), false);
+                if (attrs != null && attrs.Length > 0)
+                    return ((Description)attrs[0]).Text;
+            }
+            return en.ToString();
+        }
+
+    }
+
+    public class WaterSourceReport
+    {
+        [JsonProperty("id")]
+        public int id { get; set; }
+
+        [JsonProperty("postDate")]
+        public DateTime postDate { get; set; }
+
+        [JsonProperty("latitude")]
+        public double latitude { get; set; }
+
+        [JsonProperty("longitude")]
+        public double longitude { get; set; }
+
+        [JsonProperty("waterType")]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public WaterType waterType { get; set; }
+
+        [JsonProperty("waterCondition")]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public WaterCondition waterCondition { get; set; }
+
+        [JsonProperty("authorUsername")]
+        public string authorUsername { get; set; }
+    }
+
+    class Description : Attribute
+    {
+        public string Text;
+        public Description(string text)
+        {
+            Text = text;
         }
     }
+
+    public enum WaterType
+    {
+        [Description("Bottled")]
+        BOTTLED,
+        [Description("Well")]
+        WELL,
+        [Description("Stream")]
+        STREAM,
+        [Description("Lake")]
+        LAKE,
+        [Description("Spring")]
+        SPRING,
+        [Description("Other")]
+        OTHER
+    };
+
+    public enum WaterCondition
+    {
+        [Description("Potable")]
+        POTABLE,
+        [Description("Treatable Clear")]
+        TREATABLE_CLEAR,
+        [Description("Treatable Muddy")]
+        TREATABLE_MUDDY,
+        [Description("Waste")]
+        WASTE
+    };
+
+
+   
 }
