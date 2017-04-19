@@ -3,6 +3,88 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Height="600" Width="800">
     <Grid>
-        <WebBrowser x:Name="Browser" LoadCompleted="Browser_LoadCompleted"/>
+        <TabControl Name="tabMenu">
+            <TabItem Header="Login" Name="loginView">
+                <Grid VerticalAlignment="Center">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="60" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="60" />
+                    </Grid.RowDefinitions>
+                    <Label Content="WATER CAKE" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="LightBlue" FontSize="34" FontWeight="Bold"></Label>
+                    <Label Content="Username" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center"></Label>
+                    <TextBox Name="usernameTextbox" Width="200" Height="23" Grid.Row="2"></TextBox>
+                    <Label Content="Password" Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Center"></Label>
+                    <PasswordBox Name="passwordTextbox" Width="200" Height="23" Grid.Row="4"></PasswordBox>
+                    <Button Name="loginButton" Grid.Row="5" HorizontalAlignment="Center" Content="Login" Height="30" Width="80" Click="loginButton_Click"></Button>
+                </Grid>
+            </TabItem>
+            
+            <TabItem Header="Register" Name="registerView">
+                <Grid VerticalAlignment="Center">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="60" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="60" />
+                    </Grid.RowDefinitions>
+                    <Label Content="WATER CAKE" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="LightBlue" FontSize="34" FontWeight="Bold"></Label>
+                    
+                    <Label Content="Username" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center"></Label>
+                    <TextBox Name="newUsernameTextbox" Width="200" Height="23" Grid.Row="2"></TextBox>
+
+                    <Label Content="Email" Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Center"></Label>
+                    <TextBox Name="newEmailTextbox" Width="200" Height="23" Grid.Row="4"></TextBox>
+
+                    <Label Content="Password" Grid.Row="5" VerticalAlignment="Center" HorizontalAlignment="Center"></Label>
+                    <PasswordBox Name="newPasswordTextbox" Width="200" Height="23" Grid.Row="6"></PasswordBox>
+
+                    <Label Content="Password Repeat" Grid.Row="7" VerticalAlignment="Center" HorizontalAlignment="Center"></Label>
+                    <PasswordBox Name="newPasswordRepeatTextbox" Width="200" Height="23" Grid.Row="8"></PasswordBox>
+
+                    <Label Content="Title" Grid.Row="9" VerticalAlignment="Center" HorizontalAlignment="Center"></Label>
+                    <TextBox Name="newTitleTextbox" Width="200" Height="23" Grid.Row="10"></TextBox>
+
+                    <Label Content="City" Grid.Row="11" VerticalAlignment="Center" HorizontalAlignment="Center"></Label>
+                    <TextBox Name="newCityTextbox" Width="200" Height="23" Grid.Row="12"></TextBox>
+
+                    <Label Content="User Type" Grid.Row="13" VerticalAlignment="Center" HorizontalAlignment="Center"></Label>
+                    <ComboBox Name="newUserTypeCombobox" Width="200" Height="23" Grid.Row="14">
+                        <ComboBoxItem>Contributor</ComboBoxItem>
+                        <ComboBoxItem>Worker</ComboBoxItem>
+                        <ComboBoxItem>Manager</ComboBoxItem>
+                        <ComboBoxItem>Administrator</ComboBoxItem>
+                    </ComboBox>
+
+                    <Button Name="registerButton" Grid.Row="15" HorizontalAlignment="Center" Content="Register" Height="30" Width="80" Click="registerButton_Click" ></Button>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Map View" Name="mapView" Visibility="Collapsed">
+                <Grid>
+                    <WebBrowser x:Name="Browser" LoadCompleted="Browser_LoadCompleted"/>
+                </Grid>
+            </TabItem>
+            <TabItem  Name="logoutView" Visibility="Collapsed">
+                <TabItem.Header>
+                    <Label Content="Logout" MouseLeftButtonDown="Label_MouseLeftButtonDown"/>
+                </TabItem.Header>
+                <Grid />
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>

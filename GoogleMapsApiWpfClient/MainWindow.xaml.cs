@@ -9,8 +9,8 @@ using System.IO;
 using System.Text;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace GoogleMapsApiWpfClient
 {
@@ -26,11 +26,8 @@ namespace GoogleMapsApiWpfClient
         {
             InitializeComponent();
             markers = new Dictionary<int, string>();
-            _gMapsWrapper = GoogleMapWrapper.Create(this, new MapOptions() { DraggingEnabled = true, MapType = MapTypeId.Satellite, Center = new GeographicLocation(0, 0), Zoom = 3 }, new StreetViewOptions() {  });
+            _gMapsWrapper = GoogleMapWrapper.Create(this, new MapOptions() { DraggingEnabled = true, MapType = MapTypeId.Satellite, Center = new GeographicLocation(0, 0), Zoom = 3 }, new StreetViewOptions() { });
         }
-
-        
-
 
         private void loadSourceReports()
         {
@@ -74,6 +71,7 @@ namespace GoogleMapsApiWpfClient
             try
             {
                 WebResponse response = request.GetResponse();
+
                 using (Stream responseStream = response.GetResponseStream())
                 {
                     StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
@@ -87,9 +85,77 @@ namespace GoogleMapsApiWpfClient
                 {
                     StreamReader reader = new StreamReader(responseStream, Encoding.GetEncoding("utf-8"));
                     String errorText = reader.ReadToEnd();
-                    // log errorText
                 }
                 throw;
+            }
+        }
+
+        int attemptLogin(string url)
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.ContentType = "application/json; charset=utf-8";
+            request.Method = "POST";
+
+            try
+            {
+                using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+                {
+                    streamWriter.Write(JsonConvert.SerializeObject(new Credentials()
+                    {
+                        username = usernameTextbox.Text,
+                        password = passwordTextbox.Password
+                    }));
+                    streamWriter.Flush();
+                }
+
+                var response = request.GetResponse() as HttpWebResponse;
+                return (int)response.StatusCode;
+            }
+            catch (WebException ex)
+            {
+                return (int)((HttpWebResponse)ex.Response).StatusCode;
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return 400;
+            }
+        }
+
+        int attemptRegister(string url) //201
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.ContentType = "application/json; charset=utf-8";
+            request.Method = "POST";
+
+            try
+            {
+                using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+                {
+                    streamWriter.Write(JsonConvert.SerializeObject(new NewUser()
+                    {
+                        username = newUsernameTextbox.Text,
+                        password = newPasswordTextbox.Password,
+                        city = newCityTextbox.Text,
+                        email = newEmailTextbox.Text,
+                        title = newTitleTextbox.Text,
+                        userType = newUserTypeCombobox.Text.ToUpper()
+
+                    }));
+                    streamWriter.Flush();
+                }
+
+                var response = request.GetResponse() as HttpWebResponse;
+                return (int)response.StatusCode;
+            }
+            catch (WebException ex)
+            {
+                return (int)((HttpWebResponse)ex.Response).StatusCode;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return 400;
             }
         }
 
@@ -100,7 +166,7 @@ namespace GoogleMapsApiWpfClient
 
         public void SetHostDocumentText(string text)
         {
-             Browser.NavigateToString(text);
+            Browser.NavigateToString(text);
         }
 
         public object InvokeScript(string methodName, params object[] parameters)
@@ -134,16 +200,118 @@ namespace GoogleMapsApiWpfClient
 
         private async Task delayedWork()
         {
-            await Task.Delay(1500);
-            this.loadSourceReports();
+            try
+            {
+                await Task.Delay(1500);
+                this.loadSourceReports();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Connection timed out.", "Network Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
-        //This could be a button click event handler or the like */
         private void StartAsyncTimedWork()
         {
             Task ignoredAwaitableResult = this.delayedWork();
         }
 
+        private void loginButton_Click(object sender, RoutedEventArgs e)
+        {
+            var statusCode = attemptLogin("http://localhost:8080/login");
+            if (statusCode == 204)
+            {
+                mapView.Visibility = Visibility.Visible;
+                tabMenu.SelectedItem = mapView;
+                loginView.Visibility = Visibility.Collapsed;
+                registerView.Visibility = Visibility.Collapsed;
+                logoutView.Visibility = Visibility.Visible;
+
+                usernameTextbox.Clear();
+                passwordTextbox.Clear();
+
+            }
+            else if (statusCode == 401)
+            {
+                MessageBox.Show("Wrong password!", "Authentication Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            else if (statusCode == 404)
+            {
+                MessageBox.Show("Username not found!", "Authentication Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            else
+            {
+                MessageBox.Show("Unknown error!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void registerButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (newPasswordTextbox.Password != newPasswordRepeatTextbox.Password)
+            {
+                MessageBox.Show("Passwords do not match!", "Validation Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            var statusCode = attemptRegister("http://localhost:8080/accounts/");
+            if (statusCode == 201)
+            {
+                mapView.Visibility = Visibility.Visible;
+                tabMenu.SelectedItem = mapView;
+                loginView.Visibility = Visibility.Collapsed;
+                registerView.Visibility = Visibility.Collapsed;
+                logoutView.Visibility = Visibility.Visible;
+
+                newUsernameTextbox.Clear();
+                newPasswordTextbox.Clear();
+                newPasswordRepeatTextbox.Clear();
+                newEmailTextbox.Clear();
+                newCityTextbox.Clear();
+                newTitleTextbox.Clear();
+                newUserTypeCombobox.SelectedIndex = -1;
+                
+            }
+            else if (statusCode == 400)
+            {
+                MessageBox.Show("Bad request!", "Registration Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            else
+            {
+                MessageBox.Show("Unknown error!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void Label_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            loginView.Visibility = Visibility.Visible;
+            tabMenu.SelectedItem = loginView;
+            mapView.Visibility = Visibility.Collapsed;
+            registerView.Visibility = Visibility.Visible;
+            logoutView.Visibility = Visibility.Collapsed;
+        }
+    }
+
+    public class Credentials
+    {
+        [JsonProperty("username")]
+        public string username { get; set; }
+        [JsonProperty("password")]
+        public string password { get; set; }
+    }
+
+    public class NewUser : Credentials
+    {
+        [JsonProperty("userType")]
+        public string userType { get; set; }
+
+        [JsonProperty("email")]
+        public string email { get; set; }
+
+        [JsonProperty("title")]
+        public string title { get; set; }
+
+        [JsonProperty("city")]
+        public string city { get; set; }
     }
 
     public class WaterSourceReport
