@@ -33,6 +33,7 @@ namespace GoogleMapsApiWpfClient
         {
             string jsonResponse = GET(@"http://localhost:8080/water-reports");
             var allSourceReports = JArray.Parse(jsonResponse).ToObject<List<WaterSourceReport>>();
+            sourceReportsListView.ItemsSource = allSourceReports;
             foreach (var report in allSourceReports)
             {
                 var location = new GeographicLocation(report.latitude, report.longitude);
@@ -56,6 +57,19 @@ namespace GoogleMapsApiWpfClient
 
         }
 
+        private void getAllSourceReports()
+        {
+            string jsonResponse = GET(@"http://localhost:8080/water-reports");
+            var allSourceReports = JArray.Parse(jsonResponse).ToObject<List<WaterSourceReport>>();
+            sourceReportsListView.ItemsSource = allSourceReports;
+        }
+
+        private void getAllPurityReports()
+        {
+            string jsonResponse = GET(@"http://localhost:8080/purity-reports");
+            var allPurityReports = JArray.Parse(jsonResponse).ToObject<List<WaterPurityReport>>();
+            purityReportsListView.ItemsSource = allPurityReports;
+        }
 
         private void my_marker_Click(IMarker arg1, GeographicLocation arg2)
         {
@@ -218,7 +232,7 @@ namespace GoogleMapsApiWpfClient
 
         private void loginButton_Click(object sender, RoutedEventArgs e)
         {
-            var statusCode = attemptLogin("http://localhost:8080/login");
+            var statusCode = attemptLogin(@"http://localhost:8080/login");
             if (statusCode == 204)
             {
                 mapView.Visibility = Visibility.Visible;
@@ -226,6 +240,9 @@ namespace GoogleMapsApiWpfClient
                 loginView.Visibility = Visibility.Collapsed;
                 registerView.Visibility = Visibility.Collapsed;
                 logoutView.Visibility = Visibility.Visible;
+
+                purityReportsView.Visibility = Visibility.Visible;
+                sourceReportsView.Visibility = Visibility.Visible;
 
                 usernameTextbox.Clear();
                 passwordTextbox.Clear();
@@ -253,7 +270,7 @@ namespace GoogleMapsApiWpfClient
                 return;
             }
 
-            var statusCode = attemptRegister("http://localhost:8080/accounts/");
+            var statusCode = attemptRegister(@"http://localhost:8080/accounts/");
             if (statusCode == 201)
             {
                 mapView.Visibility = Visibility.Visible;
@@ -261,6 +278,9 @@ namespace GoogleMapsApiWpfClient
                 loginView.Visibility = Visibility.Collapsed;
                 registerView.Visibility = Visibility.Collapsed;
                 logoutView.Visibility = Visibility.Visible;
+
+                purityReportsView.Visibility = Visibility.Visible;
+                sourceReportsView.Visibility = Visibility.Visible;
 
                 newUsernameTextbox.Clear();
                 newPasswordTextbox.Clear();
@@ -288,6 +308,18 @@ namespace GoogleMapsApiWpfClient
             mapView.Visibility = Visibility.Collapsed;
             registerView.Visibility = Visibility.Visible;
             logoutView.Visibility = Visibility.Collapsed;
+            purityReportsView.Visibility = Visibility.Collapsed;
+            sourceReportsView.Visibility = Visibility.Collapsed;
+        }
+
+        private void Label_MouseLeftButtonDown_1(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            getAllPurityReports();
+        }
+
+        private void Label_MouseLeftButtonDown_2(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            getAllSourceReports();
         }
     }
 
@@ -313,8 +345,8 @@ namespace GoogleMapsApiWpfClient
         [JsonProperty("city")]
         public string city { get; set; }
     }
-
-    public class WaterSourceReport
+   
+    public class Report
     {
         [JsonProperty("id")]
         public int id { get; set; }
@@ -328,6 +360,12 @@ namespace GoogleMapsApiWpfClient
         [JsonProperty("longitude")]
         public double longitude { get; set; }
 
+        [JsonProperty("authorUsername")]
+        public string authorUsername { get; set; }
+    }
+
+    public class WaterSourceReport :Report
+    {
         [JsonProperty("waterType")]
         [JsonConverter(typeof(StringEnumConverter))]
         public WaterType waterType { get; set; }
@@ -335,9 +373,19 @@ namespace GoogleMapsApiWpfClient
         [JsonProperty("waterCondition")]
         [JsonConverter(typeof(StringEnumConverter))]
         public WaterCondition waterCondition { get; set; }
+    }
 
-        [JsonProperty("authorUsername")]
-        public string authorUsername { get; set; }
+    public class WaterPurityReport : Report
+    {
+        [JsonProperty("waterPurityCondition")]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public WaterPurityCondition waterPurityCondition { get; set; }
+
+        [JsonProperty("virusPpm")]
+        public double virusPpm { get; set; }
+
+        [JsonProperty("contaminantPpm")]
+        public double contaminantPpm { get; set; }
     }
 
     class Description : Attribute
@@ -376,4 +424,15 @@ namespace GoogleMapsApiWpfClient
         [Description("Waste")]
         WASTE
     };
+
+    public enum WaterPurityCondition
+    {
+        [Description("Safe")]
+        SAFE,
+        [Description("Treatable")]
+        TREATABLE,
+        [Description("Unsafe")]
+        UNSAFE
+    };
+    
 }

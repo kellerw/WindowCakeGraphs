@@ -79,6 +79,53 @@
                     <WebBrowser x:Name="Browser" LoadCompleted="Browser_LoadCompleted"/>
                 </Grid>
             </TabItem>
+
+            <TabItem Name="sourceReportsView" Visibility="Collapsed">
+                <TabItem.Header>
+                    <Label Content="Source Reports" MouseLeftButtonDown="Label_MouseLeftButtonDown_2"/>
+                </TabItem.Header>
+                <Grid>
+                    <ListView Margin="10" Name="sourceReportsListView">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="ID" Width="120" DisplayMemberBinding="{Binding id}" />
+                                <GridViewColumn Header="Post Date" Width="50" DisplayMemberBinding="{Binding postDate}" />
+                                <GridViewColumn Header="Latitude" Width="150" DisplayMemberBinding="{Binding latitude}" />
+                                <GridViewColumn Header="Longtitude" Width="150" DisplayMemberBinding="{Binding longitude}" />
+                                <GridViewColumn Header="Water Type" Width="150" DisplayMemberBinding="{Binding waterType}" />
+                                <GridViewColumn Header="Water Condition" Width="150" DisplayMemberBinding="{Binding waterCondition}" />
+                                <GridViewColumn Header="Author" Width="150" DisplayMemberBinding="{Binding authorUsername}" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Grid>
+            </TabItem>
+            
+            
+            
+            <TabItem Name="purityReportsView" Visibility="Collapsed">
+                <TabItem.Header>
+                    <Label Content="Purity Reports" MouseLeftButtonDown="Label_MouseLeftButtonDown_1"/>
+                </TabItem.Header>
+                <Grid>
+                    <ListView Margin="10" Name="purityReportsListView">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="ID" Width="120" DisplayMemberBinding="{Binding id}" />
+                                <GridViewColumn Header="Post Date" Width="50" DisplayMemberBinding="{Binding postDate}" />
+                                <GridViewColumn Header="Latitude" Width="150" DisplayMemberBinding="{Binding latitude}" />
+                                <GridViewColumn Header="Longtitude" Width="150" DisplayMemberBinding="{Binding longitude}" />
+                                <GridViewColumn Header="Purity Condition" Width="150" DisplayMemberBinding="{Binding waterPurityCondition}" />
+                                <GridViewColumn Header="Virus PPM" Width="150" DisplayMemberBinding="{Binding virusPpm}" />
+                                <GridViewColumn Header="Contaminant PPM" Width="150" DisplayMemberBinding="{Binding contaminantPpm}" />
+                                <GridViewColumn Header="Author" Width="150" DisplayMemberBinding="{Binding authorUsername}" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Grid>
+            </TabItem>
+
+
             <TabItem  Name="logoutView" Visibility="Collapsed">
                 <TabItem.Header>
                     <Label Content="Logout" MouseLeftButtonDown="Label_MouseLeftButtonDown"/>
