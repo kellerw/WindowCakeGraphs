@@ -321,6 +321,21 @@ namespace GoogleMapsApiWpfClient
         {
             getAllSourceReports();
         }
+
+        private void tabMenu_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void createPurityReportButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void createSourceReportButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 
     public class Credentials
