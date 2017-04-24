@@ -21,16 +21,18 @@ namespace GoogleMapsApiWpfClient
     {
         private IGoogleMapWrapper _gMapsWrapper;
         private Dictionary<int, string> markers;
-
+        private User currentUser;
         public MainWindow()
         {
             InitializeComponent();
+            currentUser = null;
             markers = new Dictionary<int, string>();
             _gMapsWrapper = GoogleMapWrapper.Create(this, new MapOptions() { DraggingEnabled = true, MapType = MapTypeId.Satellite, Center = new GeographicLocation(0, 0), Zoom = 3 }, new StreetViewOptions() { });
         }
 
         private void loadSourceReports()
         {
+            _gMapsWrapper.Clean();
             string jsonResponse = GET(@"http://localhost:8080/water-reports");
             var allSourceReports = JArray.Parse(jsonResponse).ToObject<List<WaterSourceReport>>();
             sourceReportsListView.ItemsSource = allSourceReports;
@@ -114,48 +116,13 @@ namespace GoogleMapsApiWpfClient
             {
                 using (var streamWriter = new StreamWriter(request.GetRequestStream()))
                 {
-                    streamWriter.Write(JsonConvert.SerializeObject(new Credentials()
+                    currentUser = new User()
                     {
                         username = usernameTextbox.Text,
                         password = passwordTextbox.Password
-                    }));
-                    streamWriter.Flush();
-                }
+                    };
 
-                var response = request.GetResponse() as HttpWebResponse;
-                return (int)response.StatusCode;
-            }
-            catch (WebException ex)
-            {
-                return (int)((HttpWebResponse)ex.Response).StatusCode;
-            }
-            catch(Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return 400;
-            }
-        }
-
-        int attemptRegister(string url) //201
-        {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            request.ContentType = "application/json; charset=utf-8";
-            request.Method = "POST";
-
-            try
-            {
-                using (var streamWriter = new StreamWriter(request.GetRequestStream()))
-                {
-                    streamWriter.Write(JsonConvert.SerializeObject(new NewUser()
-                    {
-                        username = newUsernameTextbox.Text,
-                        password = newPasswordTextbox.Password,
-                        city = newCityTextbox.Text,
-                        email = newEmailTextbox.Text,
-                        title = newTitleTextbox.Text,
-                        userType = newUserTypeCombobox.Text.ToUpper()
-
-                    }));
+                    streamWriter.Write(JsonConvert.SerializeObject(currentUser));
                     streamWriter.Flush();
                 }
 
@@ -171,6 +138,133 @@ namespace GoogleMapsApiWpfClient
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return 400;
             }
+        }
+
+
+
+        int attemptRegister(string url) //201
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.ContentType = "application/json; charset=utf-8";
+            request.Method = "POST";
+
+            try
+            {
+                using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+                {
+                    currentUser = new User()
+                    {
+                        username = newUsernameTextbox.Text,
+                        password = newPasswordTextbox.Password,
+                        city = newCityTextbox.Text,
+                        email = newEmailTextbox.Text,
+                        title = newTitleTextbox.Text,
+                        userType = newUserTypeCombobox.Text.ToUpper()
+
+                    };
+
+                    streamWriter.Write(JsonConvert.SerializeObject(currentUser));
+                    streamWriter.Flush();
+                }
+
+                var response = request.GetResponse() as HttpWebResponse;
+                return (int)response.StatusCode;
+            }
+            catch (WebException ex)
+            {
+                //currentUser = null;
+                return (int)((HttpWebResponse)ex.Response).StatusCode;
+            }
+            catch (Exception ex)
+            {
+                //currentUser = null;
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return 400;
+            }
+        }
+
+        int attemptCreatePurityReport()
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create($@"http://localhost:8080/{currentUser.username}/purity-reports");
+            request.ContentType = "application/json; charset=utf-8";
+            request.Method = "POST";
+
+            try
+            {
+
+                var newPurityReport = new WaterPurityReport()
+                {
+                    contaminantPpm = Convert.ToDouble(createPurityContaminantPPMTextbox.Text),
+                    latitude = Convert.ToDouble(createPurityLatitutdeTextbox.Text),
+                    longitude = Convert.ToDouble(createPurityLongitudeTextbox.Text),
+                    virusPpm = Convert.ToDouble(createPurityVirusPPMTextbox.Text),
+                    waterPurityCondition = (WaterPurityCondition)Enum.Parse(typeof(WaterPurityCondition), createPurityConditionCombobox.Text.ToUpper()),
+                    authorUsername = currentUser.username,
+                    postDate = DateTime.Now
+                };
+
+                using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+                {
+                    streamWriter.Write(JsonConvert.SerializeObject(newPurityReport));
+                    streamWriter.Flush();
+                }
+
+                var response = request.GetResponse() as HttpWebResponse;
+                return (int)response.StatusCode;
+            }
+            catch (WebException ex)
+            {
+                //currentUser = null;
+                return (int)((HttpWebResponse)ex.Response).StatusCode;
+            }
+            catch (Exception ex)
+            {
+                //currentUser = null;
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return 400;
+            }
+
+        }
+
+        int attemptCreateSourceReport()
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create($@"http://localhost:8080/{currentUser.username}/water-reports");
+            request.ContentType = "application/json; charset=utf-8";
+            request.Method = "POST";
+
+            try
+            {
+                var newSourceReport = new WaterSourceReport()
+                {
+                    authorUsername = currentUser.username,
+                    latitude = Convert.ToDouble(createSourceLatitutdeTextbox.Text),
+                    longitude = Convert.ToDouble(createSourceLongitudeTextbox.Text),
+                    postDate = DateTime.Now,
+                    waterCondition = (WaterCondition)Enum.Parse(typeof(WaterCondition), createSourceWaterConditionCombobox.Text.ToUpper().Replace(' ', '_')),
+                    waterType = (WaterType)Enum.Parse(typeof(WaterType), createSourceWaterTypeCombobox.Text.ToUpper())
+                };
+
+                using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+                {
+                    streamWriter.Write(JsonConvert.SerializeObject(newSourceReport));
+                    streamWriter.Flush();
+                }
+
+                var response = request.GetResponse() as HttpWebResponse;
+                return (int)response.StatusCode;
+            }
+            catch (WebException ex)
+            {
+                //currentUser = null;
+                return (int)((HttpWebResponse)ex.Response).StatusCode;
+            }
+            catch (Exception ex)
+            {
+                //currentUser = null;
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return 400;
+            }
+
         }
 
         public void RegisterScriptingObject(IGoogleMapRequired wrapper)
@@ -244,6 +338,9 @@ namespace GoogleMapsApiWpfClient
                 purityReportsView.Visibility = Visibility.Visible;
                 sourceReportsView.Visibility = Visibility.Visible;
 
+                createPurityReportView.Visibility = Visibility.Visible;
+                createSourceReportView.Visibility = Visibility.Visible;
+
                 usernameTextbox.Clear();
                 passwordTextbox.Clear();
 
@@ -282,6 +379,9 @@ namespace GoogleMapsApiWpfClient
                 purityReportsView.Visibility = Visibility.Visible;
                 sourceReportsView.Visibility = Visibility.Visible;
 
+                createPurityReportView.Visibility = Visibility.Visible;
+                createSourceReportView.Visibility = Visibility.Visible;
+
                 newUsernameTextbox.Clear();
                 newPasswordTextbox.Clear();
                 newPasswordRepeatTextbox.Clear();
@@ -289,7 +389,7 @@ namespace GoogleMapsApiWpfClient
                 newCityTextbox.Clear();
                 newTitleTextbox.Clear();
                 newUserTypeCombobox.SelectedIndex = -1;
-                
+
             }
             else if (statusCode == 400)
             {
@@ -301,6 +401,7 @@ namespace GoogleMapsApiWpfClient
             }
         }
 
+        // logout
         private void Label_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             loginView.Visibility = Visibility.Visible;
@@ -310,6 +411,8 @@ namespace GoogleMapsApiWpfClient
             logoutView.Visibility = Visibility.Collapsed;
             purityReportsView.Visibility = Visibility.Collapsed;
             sourceReportsView.Visibility = Visibility.Collapsed;
+            createSourceReportView.Visibility = Visibility.Collapsed;
+            createPurityReportView.Visibility = Visibility.Collapsed;
         }
 
         private void Label_MouseLeftButtonDown_1(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -329,12 +432,19 @@ namespace GoogleMapsApiWpfClient
 
         private void createPurityReportButton_Click(object sender, RoutedEventArgs e)
         {
-
+            int statusCode = attemptCreatePurityReport();
+            MessageBox.Show($"status code for purity report create:{statusCode}");
         }
 
         private void createSourceReportButton_Click(object sender, RoutedEventArgs e)
         {
+            int statusCode = attemptCreateSourceReport();
+            MessageBox.Show($"status code for purity report create:{statusCode}");
+        }
 
+        private void Label_MouseLeftButtonDown_3(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            loadSourceReports();
         }
     }
 
@@ -346,7 +456,7 @@ namespace GoogleMapsApiWpfClient
         public string password { get; set; }
     }
 
-    public class NewUser : Credentials
+    public class User : Credentials
     {
         [JsonProperty("userType")]
         public string userType { get; set; }
@@ -360,7 +470,7 @@ namespace GoogleMapsApiWpfClient
         [JsonProperty("city")]
         public string city { get; set; }
     }
-   
+
     public class Report
     {
         [JsonProperty("id")]
@@ -379,7 +489,7 @@ namespace GoogleMapsApiWpfClient
         public string authorUsername { get; set; }
     }
 
-    public class WaterSourceReport :Report
+    public class WaterSourceReport : Report
     {
         [JsonProperty("waterType")]
         [JsonConverter(typeof(StringEnumConverter))]
@@ -449,5 +559,5 @@ namespace GoogleMapsApiWpfClient
         [Description("Unsafe")]
         UNSAFE
     };
-    
+
 }

@@ -75,7 +75,10 @@
             </Grid>
         </TabItem>
 
-        <TabItem Header="Map View" Name="mapView" Visibility="Collapsed">
+        <TabItem Name="mapView" Visibility="Collapsed">
+                <TabItem.Header>
+                    <Label Content="Map View" MouseLeftButtonDown="Label_MouseLeftButtonDown_3"/>
+                </TabItem.Header>
             <Grid>
                 <WebBrowser x:Name="Browser" LoadCompleted="Browser_LoadCompleted"/>
             </Grid>
@@ -170,7 +173,7 @@
                 </Grid>
             </TabItem>
 
-            <TabItem Header="Create Source Report" Name="createPurityReportView" Visibility="Collapsed">
+            <TabItem Header="Create Purity Report" Name="createPurityReportView" Visibility="Collapsed">
                 <Grid VerticalAlignment="Center">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="40" />
