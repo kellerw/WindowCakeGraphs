@@ -4,128 +4,128 @@
         Title="MainWindow" Height="800" Width="1200">
     <Grid>
         <TabControl Name="tabMenu" SelectionChanged="tabMenu_SelectionChanged">
-        <TabItem Header="Login" Name="loginView">
-            <Grid VerticalAlignment="Center">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="60" />
-                    <RowDefinition Height="30" />
-                    <RowDefinition Height="30" />
-                    <RowDefinition Height="30" />
-                    <RowDefinition Height="30" />
-                    <RowDefinition Height="60" />
-                </Grid.RowDefinitions>
-                <Label Content="WATER CAKE" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="LightBlue" FontSize="34" FontWeight="Bold"></Label>
-                <Label Content="Username" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center"></Label>
-                <TextBox Name="usernameTextbox" Width="200" Height="23" Grid.Row="2"></TextBox>
-                <Label Content="Password" Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Center"></Label>
-                <PasswordBox Name="passwordTextbox" Width="200" Height="23" Grid.Row="4"></PasswordBox>
-                <Button Name="loginButton" Grid.Row="5" HorizontalAlignment="Center" Content="Login" Height="30" Width="80" Click="loginButton_Click"></Button>
-            </Grid>
-        </TabItem>
+            <TabItem Header="Login" Name="loginView">
+                <Grid VerticalAlignment="Center">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="60" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="60" />
+                    </Grid.RowDefinitions>
+                    <Label Content="WATER CAKE" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="LightBlue" FontSize="34" FontWeight="Bold"></Label>
+                    <Label Content="Username" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center"></Label>
+                    <TextBox Name="usernameTextbox" Width="200" Height="23" Grid.Row="2"></TextBox>
+                    <Label Content="Password" Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Center"></Label>
+                    <PasswordBox Name="passwordTextbox" Width="200" Height="23" Grid.Row="4"></PasswordBox>
+                    <Button Name="loginButton" Grid.Row="5" HorizontalAlignment="Center" Content="Login" Height="30" Width="80" Click="loginButton_Click"></Button>
+                </Grid>
+            </TabItem>
 
-        <TabItem Header="Register" Name="registerView">
-            <Grid VerticalAlignment="Center">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="60" />
-                    <RowDefinition Height="30" />
-                    <RowDefinition Height="30" />
-                    <RowDefinition Height="30" />
-                    <RowDefinition Height="30" />
-                    <RowDefinition Height="30" />
-                    <RowDefinition Height="30" />
-                    <RowDefinition Height="30" />
-                    <RowDefinition Height="30" />
-                    <RowDefinition Height="30" />
-                    <RowDefinition Height="30" />
-                    <RowDefinition Height="30" />
-                    <RowDefinition Height="30" />
-                    <RowDefinition Height="30" />
-                    <RowDefinition Height="30" />
-                    <RowDefinition Height="60" />
-                </Grid.RowDefinitions>
-                <Label Content="WATER CAKE" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="LightBlue" FontSize="34" FontWeight="Bold"></Label>
+            <TabItem Header="Register" Name="registerView">
+                <Grid VerticalAlignment="Center">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="60" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="60" />
+                    </Grid.RowDefinitions>
+                    <Label Content="WATER CAKE" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="LightBlue" FontSize="34" FontWeight="Bold"></Label>
 
-                <Label Content="Username" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center"></Label>
-                <TextBox Name="newUsernameTextbox" Width="200" Height="23" Grid.Row="2"></TextBox>
+                    <Label Content="Username" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center"></Label>
+                    <TextBox Name="newUsernameTextbox" Width="200" Height="23" Grid.Row="2"></TextBox>
 
-                <Label Content="Email" Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Center"></Label>
-                <TextBox Name="newEmailTextbox" Width="200" Height="23" Grid.Row="4"></TextBox>
+                    <Label Content="Email" Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Center"></Label>
+                    <TextBox Name="newEmailTextbox" Width="200" Height="23" Grid.Row="4"></TextBox>
 
-                <Label Content="Password" Grid.Row="5" VerticalAlignment="Center" HorizontalAlignment="Center"></Label>
-                <PasswordBox Name="newPasswordTextbox" Width="200" Height="23" Grid.Row="6"></PasswordBox>
+                    <Label Content="Password" Grid.Row="5" VerticalAlignment="Center" HorizontalAlignment="Center"></Label>
+                    <PasswordBox Name="newPasswordTextbox" Width="200" Height="23" Grid.Row="6"></PasswordBox>
 
-                <Label Content="Password Repeat" Grid.Row="7" VerticalAlignment="Center" HorizontalAlignment="Center"></Label>
-                <PasswordBox Name="newPasswordRepeatTextbox" Width="200" Height="23" Grid.Row="8"></PasswordBox>
+                    <Label Content="Password Repeat" Grid.Row="7" VerticalAlignment="Center" HorizontalAlignment="Center"></Label>
+                    <PasswordBox Name="newPasswordRepeatTextbox" Width="200" Height="23" Grid.Row="8"></PasswordBox>
 
-                <Label Content="Title" Grid.Row="9" VerticalAlignment="Center" HorizontalAlignment="Center"></Label>
-                <TextBox Name="newTitleTextbox" Width="200" Height="23" Grid.Row="10"></TextBox>
+                    <Label Content="Title" Grid.Row="9" VerticalAlignment="Center" HorizontalAlignment="Center"></Label>
+                    <TextBox Name="newTitleTextbox" Width="200" Height="23" Grid.Row="10"></TextBox>
 
-                <Label Content="City" Grid.Row="11" VerticalAlignment="Center" HorizontalAlignment="Center"></Label>
-                <TextBox Name="newCityTextbox" Width="200" Height="23" Grid.Row="12"></TextBox>
+                    <Label Content="City" Grid.Row="11" VerticalAlignment="Center" HorizontalAlignment="Center"></Label>
+                    <TextBox Name="newCityTextbox" Width="200" Height="23" Grid.Row="12"></TextBox>
 
-                <Label Content="User Type" Grid.Row="13" VerticalAlignment="Center" HorizontalAlignment="Center"></Label>
-                <ComboBox Name="newUserTypeCombobox" Width="200" Height="23" Grid.Row="14">
-                    <ComboBoxItem>Contributor</ComboBoxItem>
-                    <ComboBoxItem>Worker</ComboBoxItem>
-                    <ComboBoxItem>Manager</ComboBoxItem>
-                    <ComboBoxItem>Administrator</ComboBoxItem>
-                </ComboBox>
+                    <Label Content="User Type" Grid.Row="13" VerticalAlignment="Center" HorizontalAlignment="Center"></Label>
+                    <ComboBox Name="newUserTypeCombobox" Width="200" Height="23" Grid.Row="14">
+                        <ComboBoxItem>Contributor</ComboBoxItem>
+                        <ComboBoxItem>Worker</ComboBoxItem>
+                        <ComboBoxItem>Manager</ComboBoxItem>
+                        <ComboBoxItem>Administrator</ComboBoxItem>
+                    </ComboBox>
 
-                <Button Name="registerButton" Grid.Row="15" HorizontalAlignment="Center" Content="Register" Height="30" Width="80" Click="registerButton_Click" ></Button>
-            </Grid>
-        </TabItem>
+                    <Button Name="registerButton" Grid.Row="15" HorizontalAlignment="Center" Content="Register" Height="30" Width="80" Click="registerButton_Click" ></Button>
+                </Grid>
+            </TabItem>
 
-        <TabItem Name="mapView" Visibility="Collapsed">
+            <TabItem Name="mapView" Visibility="Collapsed">
                 <TabItem.Header>
                     <Label Content="Map View" MouseLeftButtonDown="Label_MouseLeftButtonDown_3"/>
                 </TabItem.Header>
-            <Grid>
-                <WebBrowser x:Name="Browser" LoadCompleted="Browser_LoadCompleted"/>
-            </Grid>
-        </TabItem>
+                <Grid>
+                    <WebBrowser x:Name="Browser" LoadCompleted="Browser_LoadCompleted"/>
+                </Grid>
+            </TabItem>
 
-        <TabItem Name="sourceReportsView" Visibility="Collapsed">
-            <TabItem.Header>
-                <Label Content="Source Reports" MouseLeftButtonDown="Label_MouseLeftButtonDown_2"/>
-            </TabItem.Header>
-            <Grid>
-                <ListView Margin="10" Name="sourceReportsListView">
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn Header="ID" Width="120" DisplayMemberBinding="{Binding id}" />
-                            <GridViewColumn Header="Post Date" Width="50" DisplayMemberBinding="{Binding postDate}" />
-                            <GridViewColumn Header="Latitude" Width="150" DisplayMemberBinding="{Binding latitude}" />
-                            <GridViewColumn Header="Longtitude" Width="150" DisplayMemberBinding="{Binding longitude}" />
-                            <GridViewColumn Header="Water Type" Width="150" DisplayMemberBinding="{Binding waterType}" />
-                            <GridViewColumn Header="Water Condition" Width="150" DisplayMemberBinding="{Binding waterCondition}" />
-                            <GridViewColumn Header="Author" Width="150" DisplayMemberBinding="{Binding authorUsername}" />
-                        </GridView>
-                    </ListView.View>
-                </ListView>
-            </Grid>
-        </TabItem>
+            <TabItem Name="sourceReportsView" Visibility="Collapsed">
+                <TabItem.Header>
+                    <Label Content="Source Reports" MouseLeftButtonDown="Label_MouseLeftButtonDown_2"/>
+                </TabItem.Header>
+                <Grid>
+                    <ListView Margin="10" Name="sourceReportsListView">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="ID" Width="120" DisplayMemberBinding="{Binding id}" />
+                                <GridViewColumn Header="Post Date" Width="50" DisplayMemberBinding="{Binding postDate}" />
+                                <GridViewColumn Header="Latitude" Width="150" DisplayMemberBinding="{Binding latitude}" />
+                                <GridViewColumn Header="Longtitude" Width="150" DisplayMemberBinding="{Binding longitude}" />
+                                <GridViewColumn Header="Water Type" Width="150" DisplayMemberBinding="{Binding waterType}" />
+                                <GridViewColumn Header="Water Condition" Width="150" DisplayMemberBinding="{Binding waterCondition}" />
+                                <GridViewColumn Header="Author" Width="150" DisplayMemberBinding="{Binding authorUsername}" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Grid>
+            </TabItem>
 
-        <TabItem Name="purityReportsView" Visibility="Collapsed">
-            <TabItem.Header>
-                <Label Content="Purity Reports" MouseLeftButtonDown="Label_MouseLeftButtonDown_1"/>
-            </TabItem.Header>
-            <Grid>
-                <ListView Margin="10" Name="purityReportsListView">
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn Header="ID" Width="120" DisplayMemberBinding="{Binding id}" />
-                            <GridViewColumn Header="Post Date" Width="50" DisplayMemberBinding="{Binding postDate}" />
-                            <GridViewColumn Header="Latitude" Width="150" DisplayMemberBinding="{Binding latitude}" />
-                            <GridViewColumn Header="Longtitude" Width="150" DisplayMemberBinding="{Binding longitude}" />
-                            <GridViewColumn Header="Purity Condition" Width="150" DisplayMemberBinding="{Binding waterPurityCondition}" />
-                            <GridViewColumn Header="Virus PPM" Width="150" DisplayMemberBinding="{Binding virusPpm}" />
-                            <GridViewColumn Header="Contaminant PPM" Width="150" DisplayMemberBinding="{Binding contaminantPpm}" />
-                            <GridViewColumn Header="Author" Width="150" DisplayMemberBinding="{Binding authorUsername}" />
-                        </GridView>
-                    </ListView.View>
-                </ListView>
-            </Grid>
-        </TabItem>
+            <TabItem Name="purityReportsView" Visibility="Collapsed">
+                <TabItem.Header>
+                    <Label Content="Purity Reports" MouseLeftButtonDown="Label_MouseLeftButtonDown_1"/>
+                </TabItem.Header>
+                <Grid>
+                    <ListView Margin="10" Name="purityReportsListView">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="ID" Width="120" DisplayMemberBinding="{Binding id}" />
+                                <GridViewColumn Header="Post Date" Width="50" DisplayMemberBinding="{Binding postDate}" />
+                                <GridViewColumn Header="Latitude" Width="150" DisplayMemberBinding="{Binding latitude}" />
+                                <GridViewColumn Header="Longtitude" Width="150" DisplayMemberBinding="{Binding longitude}" />
+                                <GridViewColumn Header="Purity Condition" Width="150" DisplayMemberBinding="{Binding waterPurityCondition}" />
+                                <GridViewColumn Header="Virus PPM" Width="150" DisplayMemberBinding="{Binding virusPpm}" />
+                                <GridViewColumn Header="Contaminant PPM" Width="150" DisplayMemberBinding="{Binding contaminantPpm}" />
+                                <GridViewColumn Header="Author" Width="150" DisplayMemberBinding="{Binding authorUsername}" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </Grid>
+            </TabItem>
 
 
             <TabItem Header="Create Source Report" Name="createSourceReportView" Visibility="Collapsed">
@@ -214,13 +214,55 @@
                     <Button Name="createPurityReportButton" Grid.Row="11" HorizontalAlignment="Center" Content="Create Purity Report" Click="createPurityReportButton_Click" Height="30" Width="140" />
                 </Grid>
             </TabItem>
+            <TabItem Header="Historical Report Graph" Name="viewHistoricalReportGraph" Visibility="Collapsed">
+                <Grid VerticalAlignment="Center">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="700" />
+                        <RowDefinition Height="30" />
+                    </Grid.RowDefinitions>
+                    <Canvas Name="Canvas" Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                    <Button Name="backFromGraphButton" Grid.Row="1" HorizontalAlignment="Center" Content="Back" Click="backFromGraphButton_Click" Height="30" Width="140" />
+                </Grid>
+            </TabItem>
+            <TabItem Header="View Historical Report" Name="viewHistoricalReport" Visibility="Collapsed">
+                <Grid VerticalAlignment="Center">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                        <RowDefinition Height="30" />
+                    </Grid.RowDefinitions>
 
+                    <Label Content="View Historical Report" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center"  FontSize="22" FontWeight="Bold"></Label>
+
+                    <Label Content="Latitude" Grid.Row="1" VerticalAlignment="Center" HorizontalAlignment="Center"></Label>
+                    <TextBox Name="viewHistoricalLatitudeTextbox" Width="200" Height="23" Grid.Row="2"></TextBox>
+
+                    <Label Content="Longitude" Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Center"></Label>
+                    <TextBox Name="viewHistoricalLongitudeTextbox" Width="200" Height="23" Grid.Row="4"></TextBox>
+
+                    <Label Content="Year" Grid.Row="5" VerticalAlignment="Center" HorizontalAlignment="Center"></Label>
+                    <TextBox Name="viewHistoricalYearTextbox" Width="200" Height="23" Grid.Row="6"></TextBox>
+
+                    <Button Name="viewReportButton" Grid.Row="8" HorizontalAlignment="Center" Content="View Historical Report" Click="viewHistoricalReportButton_Click" Height="30" Width="140" />
+
+
+                </Grid>
+            </TabItem>
             <TabItem  Name="logoutView" Visibility="Collapsed">
-            <TabItem.Header>
-                <Label Content="Logout" MouseLeftButtonDown="Label_MouseLeftButtonDown"/>
-            </TabItem.Header>
-            <Grid />
-        </TabItem>
-    </TabControl>
+                <TabItem.Header>
+                    <Label Content="Logout" MouseLeftButtonDown="Label_MouseLeftButtonDown"/>
+                </TabItem.Header>
+                <Grid />
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>

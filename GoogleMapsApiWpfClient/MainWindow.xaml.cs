@@ -11,6 +11,7 @@ using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace GoogleMapsApiWpfClient
 {
@@ -71,6 +72,12 @@ namespace GoogleMapsApiWpfClient
             string jsonResponse = GET(@"http://localhost:8080/purity-reports");
             var allPurityReports = JArray.Parse(jsonResponse).ToObject<List<WaterPurityReport>>();
             purityReportsListView.ItemsSource = allPurityReports;
+        }
+
+        private List<WaterPurityReport> getPurityReportsList()
+        {
+            string jsonResponse = GET(@"http://localhost:8080/purity-reports");
+            return JArray.Parse(jsonResponse).ToObject<List<WaterPurityReport>>();
         }
 
         private void my_marker_Click(IMarker arg1, GeographicLocation arg2)
@@ -335,11 +342,20 @@ namespace GoogleMapsApiWpfClient
                 registerView.Visibility = Visibility.Collapsed;
                 logoutView.Visibility = Visibility.Visible;
 
-                purityReportsView.Visibility = Visibility.Visible;
+                String type = currentUser.username.ToLower();
+                if (type.Equals("manager")|| type.Equals("worker") || type.Equals("admin"))
+                {
+                    purityReportsView.Visibility = Visibility.Visible;
+                    createPurityReportView.Visibility = Visibility.Visible;
+                    if (!type.Equals("worker"))
+                    {
+                        viewHistoricalReport.Visibility = Visibility.Visible;
+                    }
+                }
+
+                createSourceReportView.Visibility = Visibility.Visible;
                 sourceReportsView.Visibility = Visibility.Visible;
 
-                createPurityReportView.Visibility = Visibility.Visible;
-                createSourceReportView.Visibility = Visibility.Visible;
 
                 usernameTextbox.Clear();
                 passwordTextbox.Clear();
@@ -370,16 +386,23 @@ namespace GoogleMapsApiWpfClient
             var statusCode = attemptRegister(@"http://localhost:8080/accounts/");
             if (statusCode == 201)
             {
+                String type = currentUser.username.ToLower();
+                if (type.Equals("manager") || type.Equals("worker") || type.Equals("admin"))
+                {
+                    purityReportsView.Visibility = Visibility.Visible;
+                    createPurityReportView.Visibility = Visibility.Visible;
+                    if (!type.Equals("worker"))
+                    {
+                        viewHistoricalReport.Visibility = Visibility.Visible;
+                    }
+                }
                 mapView.Visibility = Visibility.Visible;
                 tabMenu.SelectedItem = mapView;
                 loginView.Visibility = Visibility.Collapsed;
                 registerView.Visibility = Visibility.Collapsed;
                 logoutView.Visibility = Visibility.Visible;
-
-                purityReportsView.Visibility = Visibility.Visible;
+                
                 sourceReportsView.Visibility = Visibility.Visible;
-
-                createPurityReportView.Visibility = Visibility.Visible;
                 createSourceReportView.Visibility = Visibility.Visible;
 
                 newUsernameTextbox.Clear();
@@ -401,6 +424,39 @@ namespace GoogleMapsApiWpfClient
             }
         }
 
+        private void viewHistoricalReportButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                double lat = Double.Parse(viewHistoricalLatitudeTextbox.Text);
+                double lon = Double.Parse(viewHistoricalLongitudeTextbox.Text);
+                int year = Int32.Parse(viewHistoricalYearTextbox.Text);
+                drawGraph(lat, lon, year);
+                tabMenu.SelectedItem = viewHistoricalReportGraph;
+                mapView.Visibility = Visibility.Collapsed;
+                logoutView.Visibility = Visibility.Collapsed;
+                purityReportsView.Visibility = Visibility.Collapsed;
+                sourceReportsView.Visibility = Visibility.Collapsed;
+                createSourceReportView.Visibility = Visibility.Collapsed;
+                createPurityReportView.Visibility = Visibility.Collapsed;
+                createPurityReportView.Visibility = Visibility.Collapsed;
+                viewHistoricalReport.Visibility = Visibility.Collapsed;
+            }
+            catch (Exception ex) { MessageBox.Show("Invalid fields!"+ex.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+        }
+        private void backFromGraphButton_Click(object sender, RoutedEventArgs e)
+        {
+            tabMenu.SelectedItem = viewHistoricalReport;
+            mapView.Visibility = Visibility.Visible;
+            logoutView.Visibility = Visibility.Visible;
+            purityReportsView.Visibility = Visibility.Visible;
+            sourceReportsView.Visibility = Visibility.Visible;
+            createSourceReportView.Visibility = Visibility.Visible;
+            createPurityReportView.Visibility = Visibility.Visible;
+            createPurityReportView.Visibility = Visibility.Visible;
+            viewHistoricalReport.Visibility = Visibility.Visible;
+        }
+
         // logout
         private void Label_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
@@ -413,6 +469,7 @@ namespace GoogleMapsApiWpfClient
             sourceReportsView.Visibility = Visibility.Collapsed;
             createSourceReportView.Visibility = Visibility.Collapsed;
             createPurityReportView.Visibility = Visibility.Collapsed;
+            viewHistoricalReport.Visibility = Visibility.Collapsed;
         }
 
         private void Label_MouseLeftButtonDown_1(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -445,6 +502,130 @@ namespace GoogleMapsApiWpfClient
         private void Label_MouseLeftButtonDown_3(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             loadSourceReports();
+        }
+        private void drawGraph(double lat, double lon, int year)
+        {
+            List<WaterPurityReport> reports = getPurityReportsList();
+            List<double>[] contam = new List<double>[13];
+            List<double>[] virus = new List<double>[13];
+            for(int i = 0; i < contam.Length; i++)
+            {
+                contam[i] = new List<double>();
+                virus[i] = new List<double>();
+            }
+            
+            foreach(WaterPurityReport pr in reports)
+            {
+                if(pr.postDate.Year == year && Math.Abs(pr.latitude-lat) + Math.Abs(pr.longitude - lon) < 0.00001)
+                {
+                    contam[pr.postDate.Month].Add(pr.contaminantPpm);
+                    virus[pr.postDate.Month].Add(pr.virusPpm);
+                }
+            }
+
+            double[,] aver = new double[13,2];
+            double min = Double.MaxValue/2;
+            double max = 0;
+            for (int i = 0; i < contam.Length; i++)
+            {
+                if (contam[i].Count > 0)
+                {
+                    foreach (double d in contam[i])
+                    {
+                        aver[i,0] += d;
+                    }
+                    foreach (double d in virus[i])
+                    {
+                        aver[i,1] += d;
+                    }
+                    aver[i,0] /= contam[i].Count;
+                    aver[i,0] /= contam[i].Count;
+                    if (aver[i,0] < min)
+                        min = aver[i,0];
+                    if (aver[i,1] < min)
+                        min = aver[i,1];
+                    if (aver[i,0] > max)
+                        max = aver[i,0];
+                    if (aver[i,1] > max)
+                        max = aver[i,1];
+                }
+                else
+                {
+                    aver[i,0] = -1;
+                    aver[i,1] = -1;
+                }
+            }
+            //hard coded default values
+            /*aver = new double[13,2] { {1,5 } , {2,7 } , {3,6 } , {2,5 } , {1,5 } , {3,5 } , 
+                {1,4 } , { 2,6} , {3,6 } , {4,5 } , {2,5 } , {1,5 } , {6,8 }};
+            max = 8;
+            min = 1;*/
+            min--;
+            max++;
+            System.Windows.Shapes.Rectangle rect;
+            rect = new System.Windows.Shapes.Rectangle();
+            rect.Stroke = new SolidColorBrush(Colors.Black);
+            rect.Fill = new SolidColorBrush(Colors.LightGray);
+            System.Windows.Shapes.Rectangle contPoint;
+            System.Windows.Shapes.Rectangle virPoint;
+            rect.Width = 1066;
+            rect.Height = 700;
+            Canvas.Children.Add(rect);
+            Canvas.SetLeft(rect, 57);
+            Canvas.SetTop(rect, 0);
+            int last = -1;
+            int lastyc = 0;
+            int lastyv = 0;
+            for (int i = 0; i < contam.Length; i++)
+            {
+                if (contam[i].Count > 0 || true)
+                {
+                    contPoint = new System.Windows.Shapes.Rectangle();
+                    virPoint = new System.Windows.Shapes.Rectangle();
+                    contPoint.Width = 5;
+                    contPoint.Height = 5;
+                    virPoint.Width = 5;
+                    virPoint.Height = 5;
+                    contPoint.Stroke = new SolidColorBrush(Colors.Blue);
+                    contPoint.Fill = new SolidColorBrush(Colors.Blue);
+                    virPoint.Stroke = new SolidColorBrush(Colors.Red);
+                    virPoint.Fill = new SolidColorBrush(Colors.Red);
+                    Canvas.Children.Add(contPoint);
+                    Canvas.SetLeft(contPoint, 82 * (1 + i));
+                    Canvas.SetTop(contPoint, (int)(700 - 700*aver[i,0] / (max-min)));
+                    Canvas.Children.Add(virPoint);
+                    Canvas.SetLeft(virPoint, 82 * (1+i));
+                    Canvas.SetTop(virPoint, (int)(700 - 700*aver[i,1] / (max - min)));
+                    if(last > -1)
+                    {
+                        System.Windows.Shapes.Line myLine = new System.Windows.Shapes.Line();
+
+                        myLine.Stroke = System.Windows.Media.Brushes.Black;
+
+                        myLine.X1 = last;
+                        myLine.X2 = 82 * (1 + i);
+                        myLine.Y1 = lastyc;
+                        myLine.Y2 = (int)(700-700 * aver[i,0] / (max - min));
+
+                        myLine.StrokeThickness = 1;
+
+                        Canvas.Children.Add(myLine);
+                        myLine = new System.Windows.Shapes.Line();
+                        myLine.Stroke = System.Windows.Media.Brushes.Black;
+                        myLine.X1 = last;
+                        myLine.X2 = 82 * (1 + i);
+                        myLine.Y1 = lastyv;
+                        myLine.Y2 = (int)(700 - 700 * aver[i,1] / (max - min));
+
+                        myLine.StrokeThickness = 1;
+
+                        Canvas.Children.Add(myLine);
+                    }
+                    last = 82 * (1 + i);
+                    lastyc = (int)(700 - 700*aver[i,0] / (max - min));
+                    lastyv = (int)(700 - 700 * aver[i,1] / (max - min));
+                }
+            }
         }
     }
 
