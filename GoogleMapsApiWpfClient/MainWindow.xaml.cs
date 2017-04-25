@@ -442,7 +442,7 @@ namespace GoogleMapsApiWpfClient
                 createPurityReportView.Visibility = Visibility.Collapsed;
                 viewHistoricalReport.Visibility = Visibility.Collapsed;
             }
-            catch (Exception ex) { MessageBox.Show("Invalid fields!"+ex.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
+            catch (Exception ex) { MessageBox.Show("Invalid fields!", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
         }
         private void backFromGraphButton_Click(object sender, RoutedEventArgs e)
         {
@@ -578,7 +578,7 @@ namespace GoogleMapsApiWpfClient
             int lastyv = 0;
             for (int i = 0; i < contam.Length; i++)
             {
-                if (contam[i].Count > 0 || true)
+                if (contam[i].Count > 0)// || true)
                 {
                     contPoint = new System.Windows.Shapes.Rectangle();
                     virPoint = new System.Windows.Shapes.Rectangle();
